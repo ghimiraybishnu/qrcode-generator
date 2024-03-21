@@ -1,23 +1,45 @@
-import logo from './logo.svg';
+import {useState, useEffect} from 'react';
 import './App.css';
 
 function App() {
+
+const [temp, setTemp] = useState("");
+const[word, setWord] = useState("");
+const[size, setSize] = useState(400);
+const [bgColor, setBgColor] = useState("ffffff");
+const [qrCode, setQrCode] = useState("");
+
+useEffect(() => {
+  setQrCode(`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example/?data=${word}!&size=${size}x${size}&bgcolor=${bgColor}`);
+}, [word, size, bgColor]);
+ 
+function handleClick() {
+  setWord(temp);
+}
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
+      <h1>Qr Code Generator</h1>
+      <div className="input-box">
+        <div className="gen">
+          <input type="text" onChange={(e) => {setTemp(e.target.value)}} placeholder="Enter text to encode" />
+          <button className="button" onClick={handleClick}>Generate</button>  
+        </div> 
+        <div className="extra">
+          <h5>DBackground Color</h5>
+          <input type="color" onChange={(e) => {
+            setBgColor(e.target.value.substring(1))
+          }} />
+          <h5>Dimension</h5>
+          <input type="range" min="200" max="600" value={size} onChange={(e) => {setSize(e.target.value)}} />
+        </div>
+      </div>
+      <div className="output-box">
+        <img src={qrCode} alt="" />
+        <a href={qrCode} download="QRCode">
+          <button type="button">Download QR Code</button>
         </a>
-      </header>
+      </div>
     </div>
   );
 }
